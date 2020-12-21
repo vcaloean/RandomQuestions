@@ -3,6 +3,9 @@ package self.caloean.roman_to_integer;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * A utility class to convert Roman numerals to their integer representation.
+ */
 public class RomanToIntegerConverter {
     private static final Map<Character, Integer> romanToInteger;
 
@@ -18,41 +21,50 @@ public class RomanToIntegerConverter {
         );
     }
 
-    public static int romanToInteger(String romanNumeralRepresentation) {
-        char[] letters = romanNumeralRepresentation.toUpperCase(Locale.US).toCharArray();
+    /**
+     * Given a roman numeral, return the equivalent integer representation. Roman numerals may only have the
+     * following letters:
+     * <pre>
+     * I (1)
+     * V (5)
+     * X (10)
+     * L (50)
+     * C (100)
+     * D (500)
+     * M (1000)
+     * </pre>
+     *
+     * @param romanNumeral The Roman numeral to convert
+     * @return the integer representation
+     * @throws IllegalArgumentException if any of the letters used in the Roman numeral are illegal
+     */
+    public static int romanToInteger(String romanNumeral) {
+        char[] letters = romanNumeral.toUpperCase(Locale.US).toCharArray();
 
-        int[] numbers = new int[letters.length];
-        for (int i = 0; i < letters.length; i++) {
-            char currentLetter = letters[i];
+        int sum = 0;
+        int previousNumber = 0;
+        for (char currentLetter : letters) {
             if (!romanToInteger.containsKey(currentLetter)) {
                 throw new IllegalArgumentException("Illegal character; not a Roman numeral: " + currentLetter);
             }
 
-            numbers[i] = romanToInteger.get(currentLetter);
-        }
+            int currentNumber = romanToInteger.get(currentLetter);
 
-        if (numbers.length == 1) {
-            return numbers[0];
-        }
+            if (previousNumber == 0) {
+                previousNumber = currentNumber;
+                continue;
+            }
 
-        int sum = 0;
-        int endIndex = numbers.length - 1;
-        for (int i = 0; i <= endIndex; i++) {
-            int currentNumber = numbers[i];
-
-            if (i == endIndex) {
-                sum += currentNumber;
+            if (previousNumber >= currentNumber) {
+                sum += previousNumber;
+                previousNumber = currentNumber;
             } else {
-                int nextNumber = numbers[i + 1];
-                if (currentNumber >= nextNumber) {
-                    sum += currentNumber;
-                } else {
-                    sum += nextNumber - currentNumber;
-                    i++;
-                }
+                sum += currentNumber - previousNumber;
+                previousNumber = 0;
             }
         }
 
+        sum += previousNumber;
         return sum;
     }
 }
