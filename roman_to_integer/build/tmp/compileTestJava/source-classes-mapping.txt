@@ -1,2 +1,0 @@
-self/caloean/roman_to_integer/RomanToIntegerConverterTest.java
- self.caloean.roman_to_integer.RomanToIntegerConverterTest
